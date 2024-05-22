@@ -3,7 +3,7 @@ title: "Homework 3"
 author: "Kinga Bihari"
 format: html
 editor: visual
-date: 05/21/2024
+date: 05/22/2024
 execute:
   message: false
   warning: false
@@ -28,7 +28,6 @@ breakfast <- read_csv("stats brekkie data.csv") |>
 ```{r}
 models <- read_csv("models.csv")
 flextable(models)
-
 ```
 
 **1.b.**
@@ -42,8 +41,6 @@ flextable(models)
 
 ## 2: Affective visualization
 
-
-
 **2.a.** My personal data is focused on when/what I eat for breakfast based on what I’m doing after. Since the “theme” is breakfast and activities, I could use these as my visualizations. I’m thinking of using emojis of breakfast foods or activities to be the points of a scatterplot. Or, I could scale the size of the emojis to represent how many times I’ve eaten that food or done that activity. 
 
 **2.b.** 
@@ -54,7 +51,6 @@ ggplot(data = breakfast,
            y = time)) + 
   geom_point()
 ```
-
 
 **2.c.**  
 
