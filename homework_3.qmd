@@ -11,21 +11,24 @@ execute:
 
 [my forked repo link](https://github.com/biharikinga/bihari-kinga_homework-03.git) 
 
-## Read in packages/data
+### Read in packages/data
 ```{r}
+# read in packages
 library(tidyverse)
 library(janitor)
 library(flextable)
 
+# read in personal data for #3
 breakfast <- read_csv("stats brekkie data.csv") |> 
-  clean_names() |> 
-  slice(1:38)
+  clean_names() |>    # clean names
+  slice(1:38)         # select dates I've collected data for
 ```
 
-## 1: Multiple linear regression: model selection and construction
+### 1: Multiple linear regression: model selection and construction
 
 **1.a.** what the fuck?
 ```{r}
+# not sure if this is right
 models <- read_csv("models.csv")
 flextable(models)
 ```
@@ -39,7 +42,7 @@ flextable(models)
 **1.e.**
 
 
-## 2: Affective visualization
+### 2: Affective visualization
 
 **2.a.** My personal data is focused on when/what I eat for breakfast based on what I’m doing after. Since the “theme” is breakfast and activities, I could use these as my visualizations. I’m thinking of using emojis of breakfast foods or activities to be the points of a scatterplot. Or, I could scale the size of the emojis to represent how many times I’ve eaten that food or done that activity. 
 
@@ -48,7 +51,8 @@ flextable(models)
 # exploratory plot
 ggplot(data = breakfast,
        aes(x = activity_category,
-           y = time)) + 
+           y = time)) +  # dataframe & axes
+# scatter plot!
   geom_point()
 ```
 
@@ -56,7 +60,7 @@ ggplot(data = breakfast,
 
 **2.d.** This is an artistic rendition of how the activity I do after breakfast influences what time I eat breakfast, with icons representing the type of activity, and the size of the icon representing how many times I recorded that activity (recreation the most, gym the least). I was influenced by artists who use emojis, which simply and easily convey a lot more information than just words, to communicate information in infographics on various social media news forums (such as the accounts @feminist and @thenewsmovement). The form is "digital collage", since I used various images, icons, and text to create my graph. I used Adobe Photoshop to create this piece, as the creative freedom to move all elements wherever I wanted to was crucial in being able to bring together everything into a cohesive message. 
 
-## Statistical critique
+### 3: Statistical critique
 
 **3.a.** Their main objective is: to quantify C and N storage of a restored wetland at the Emiquon Preserve (a restored wetland) and examine it for additional C sequestration by comparing its C storage with C storage of reference natural wetlands. They used a one-way ANOVA to determine how restored wetland soil depth influenced OC storage and TN storage of root biomass and soils. They also did a nested three-way ANOVA test to determine how the reference wetland type, soil depth, and site (nested within wetland type) influenced OC storage and TN storage of above and below ground plant biomass and soil.
 
