@@ -9,7 +9,7 @@ execute:
   warning: false
 ---
 
-[my forked repo link](https://github.com/biharikinga/bihari-kinga_homework-03.git) 
+[Kinga's forked repo link](https://github.com/biharikinga/bihari-kinga_homework-03.git) 
 
 ### Read in packages/data
 ```{r}
