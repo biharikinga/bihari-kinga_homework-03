@@ -1,0 +1,4 @@
+model number,topic,predictor variable,response variable 
+1,abalone growth,temperature (C),abalone growth (g)
+2,soil compaction,soil compaction (MPa),seedling root length (mm)
+3,plant growth,"light (watts/m^2), temperature (C), nitrogen (ppm)",plant growth (mm/wk)
