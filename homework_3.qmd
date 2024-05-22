@@ -16,6 +16,10 @@ execute:
 library(tidyverse)
 library(janitor)
 library(flextable)
+library(ggimage)
+
+brekkie <- read_csv("stats brekkie data.csv") |> 
+  clean_names()
 ```
 
 ## 1: Multiple linear regression: model selection and construction
@@ -38,9 +42,19 @@ flextable(models)
 
 ## 2: Affective visualization
 
+
+
 **2.a.** My personal data is focused on when/what I eat for breakfast based on what I’m doing after. Since the “theme” is breakfast and activities, I could use these as my visualizations. I’m thinking of using emojis of breakfast foods or activities to be the points of a scatterplot. Or, I could scale the size of the emojis to represent how many times I’ve eaten that food or done that activity. 
 
 **2.b.** Sketch 
+
+```{r}
+ggplot(data = brekkie,
+       aes(x = activity_category,
+           y = time)) + 
+  geom_emoji()
+```
+
 
 **2.c.** photo 
 
