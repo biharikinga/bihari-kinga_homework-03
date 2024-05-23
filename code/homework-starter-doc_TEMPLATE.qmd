@@ -64,11 +64,11 @@ drought_exp_clean <- drought_exp %>%
   clean_names() %>% # nicer column names
   mutate(species_name = case_when( # adding column with species scientific names
     species == "ENCCAL" ~ "Encelia californica", # bush sunflower
-    species == "ESCCAL" ~ "Eschscholzia californica", # California poppy
-    species == "PENCEN" ~ "Penstemon centranthifolius", # Scarlet bugler
+    species == "ESCCAL" ~ "Eschscholzia californica", # california poppy
+    species == "PENCEN" ~ "Penstemon centranthifolius", # scarlet bugler
     species == "GRICAM" ~ "Grindelia camporum", # great valley gumweed
-    species == "SALLEU" ~ "Salvia leucophylla", # Purple sage
-    species == "STIPUL" ~ "Nasella pulchra", # Purple needlegrass
+    species == "SALLEU" ~ "Salvia leucophylla", # purple sage
+    species == "STIPUL" ~ "Nasella pulchra", # purple needlegrass
     species == "LOTSCO" ~ "Acmispon glaber" # deerweed
   )) %>% 
   relocate(species_name, .after = species) %>% # moving species_name column after species
@@ -106,7 +106,7 @@ shoot mass strongly + corr total mass (0.902)
 shoot mass + corr w root mass (0.553)
 leaf dry mass and SLA not corr (0.003)
 
-## Preliminary visualizations  
+## Preliminary visualizations
 
 If you aren't familiar with each plant species, google them!  
 
@@ -128,7 +128,8 @@ ggplot(data = drought_exp_clean, # data frame
               height = 0) # not jittering points up and down
 ```
 
-**response here**
+plants with higher biomass seem to have large variances 
+grindelia has highest, acmispon has lowest 
 
 ### how does total biomass differ between water treatments?
 
@@ -140,7 +141,7 @@ ggplot(data = drought_exp_clean, # data frame
               height = 0) # not jittering points up and down
 ```
 
-**response here**
+well watered plants have higher biomass than drought stressed
 
 ### how does specific leaf area (SLA) influence total biomass?
 
@@ -151,17 +152,17 @@ ggplot(data = drought_exp_clean, # data frame
   geom_point() # scatterplot
 ```
 
-**response here**
+larger SLA doesn't really correlate with higher biomass
 
 # Model construction
 
 What is the null model?  
 
-0. **null model here**  
+0. **no predictors: total mass isn't predicted by any of the predictors**  
 
 What is the saturated model?  
 
-1. **saturated model here**  
+1. **all 3 predictors: total mass is predicted by SLA, water treatment, and species**  
 
 In class we are going to try two more models:  
 
@@ -192,6 +193,7 @@ par(mfrow = c(2, 2))
 plot(model1)
 # you might get a warning when you run this code - that is ok!
 ```
+diagnostics for saturated model look good 
 
 ## 2. total biomass as a function of SLA and water treatment
 
@@ -201,6 +203,7 @@ model2 <- lm(total_g ~ sla + water_treatment,
 
 plot(model2)
 ```
+diagnostics look good
 
 ## 3. total biomass as a function of SLA and species
 
@@ -210,6 +213,7 @@ model3 <- lm(total_g ~ sla + species_name,
 
 plot(model3)
 ```
+diagnostics look good
 
 # Model selection
 
@@ -222,9 +226,11 @@ model.sel(model0,
           model3)
 ```
 
-Out of the four models we have tried, the best model is the one that includes **insert predictors here**  
+Out of the four models we have tried, the best model is the one that includes **all 3 predictors**  
 
 Note that this may change once you fit and compare the other model!
+
+**look at diagnostics again!**
 
 # Model summary
 
@@ -234,17 +240,18 @@ summary(model1)
 
 What are the reference levels?  
 
-- reference for `water_treatment`  
-- reference for `species_name`  
+- reference for `water_treatment`  = "drought water_treatment Drought stressed"
+- reference for `species_name`  = "Acmispon glaber (deerweed) species_nameAcmispon glaber"
 
 **reference for water_treatment:** **insert response here**  
 **reference for species_name:** **insert response here**  
 
 Interpret the model estimates for the:  
 
-- intercept: **insert response here**  
-- SLA slope: **insert response here**  
-- well watered estimate: **insert response here**    
+- intercept: **deerweed mass in drought stressed treatment when SLA = 0**  
+- SLA slope: **across drought treatments and species, w each 1 unit in in SLA, expect in om total mass of -0.00025 which means with estimate and SE< there is not effect of SLA on total mass** 
+estimate is super smaller, and SE overlaps 0, small t, large p
+- well watered estimate: **across species and SLA, well watered plants tend to be 0.12 +- 0.02 g heavier than drought stressed plants**    
 - Lotus scoparius estimate: **insert response here**    
 - Stipa pulchra estimate: **insert response here**    
 
