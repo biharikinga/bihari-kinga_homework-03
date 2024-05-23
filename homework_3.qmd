@@ -26,11 +26,9 @@ breakfast <- read_csv("stats brekkie data.csv") |>
 
 ### 1: Multiple linear regression: model selection and construction
 
-**1.a.** what the fuck?
+**1.a.**
 ```{r}
-# not sure if this is right
-models <- read_csv("models.csv")
-flextable(models)
+
 ```
 
 **1.b.**
@@ -46,7 +44,7 @@ flextable(models)
 
 **2.a.** My personal data is focused on when/what I eat for breakfast based on what I’m doing after. Since the “theme” is breakfast and activities, I could use these as my visualizations. I’m thinking of using emojis of breakfast foods or activities to be the points of a scatterplot. Or, I could scale the size of the emojis to represent how many times I’ve eaten that food or done that activity. 
 
-**2.b.** 
+**2.b.** [insert sketch!]
 ```{r}
 # exploratory plot
 ggplot(data = breakfast,
@@ -56,7 +54,8 @@ ggplot(data = breakfast,
   geom_point()
 ```
 
-**2.c.**  
+**2.c.** [insert final graph!]
+Figure 1. When I have breakfast based on what activity I’m doing after. The icons represent the activity type and the mean time of day (gym = 8:17 am, pottery = 8:49 am, work = 10:25 am, homework = 9:02 am, recreation = 11:34 am) I eat breakfast before doing the corresponding activity. The icons’ size corresponds to how many times I have recorded doing that activity (gym = 7, pottery = 8, work = 8, homework = 11, recreation = 9). The background is an example of what I usually eat for breakfast. 
 
 **2.d.** This is an artistic rendition of how the activity I do after breakfast influences what time I eat breakfast, with icons representing the type of activity, and the size of the icon representing how many times I recorded that activity (recreation the most, gym the least). I was influenced by artists who use emojis, which simply and easily convey a lot more information than just words, to communicate information in infographics on various social media news forums (such as the accounts @feminist and @thenewsmovement). The form is "digital collage", since I used various images, icons, and text to create my graph. I used Adobe Photoshop to create this piece, as the creative freedom to move all elements wherever I wanted to was crucial in being able to bring together everything into a cohesive message. 
 
@@ -64,7 +63,7 @@ ggplot(data = breakfast,
 
 **3.a.** Their main objective is: to quantify C and N storage of a restored wetland at the Emiquon Preserve (a restored wetland) and examine it for additional C sequestration by comparing its C storage with C storage of reference natural wetlands. They used a one-way ANOVA to determine how restored wetland soil depth influenced OC storage and TN storage of root biomass and soils. They also did a nested three-way ANOVA test to determine how the reference wetland type, soil depth, and site (nested within wetland type) influenced OC storage and TN storage of above and below ground plant biomass and soil.
 
-Insert graphs and tables
+[Insert fig 2 & 3!]
 
 Fig. 2: Main message is that sedge meadows (restored wetlands) have significantly higher aboveground N and C storage than the reference marshes (natural wetlands). x-axis is aboveground C or N storage, y-axis is the wetland type (sedge or marsh). 
 Fig. 3: Main message is that sedge meadows (restored wetlands) have significantly higher root N and C storage than the reference marshes (natural wetlands). Both have lower root N and C storage in the upper 20 cm of soil than 20-40 cm deep. x-axis is root C or N storage, y-axis is the wetland type (sedge or marsh). 

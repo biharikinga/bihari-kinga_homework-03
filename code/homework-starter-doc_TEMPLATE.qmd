@@ -20,6 +20,8 @@ root mass (units: g): mass of root tissue
 
 shoot mass (units: g): mass of aboveground tissue  
 
+
+
 # Set up
 
 ## reading in packages
@@ -95,11 +97,14 @@ ggpairs(drought_exp_clean, # data frame
 
 Choose 3 pairs of variables to compare. Make notes of those comparisons below.    
 
-**insert comparison 1 here**  
+1. leaf dry weight and SLA 
+2. shoot and root mass
+3. total mass and SLA
 
-**insert comparison 2 here**  
-
-**insert comparison 3 here**
+total mass + corr w leaf dry weight (0.46)
+shoot mass strongly + corr total mass (0.902)
+shoot mass + corr w root mass (0.553)
+leaf dry mass and SLA not corr (0.003)
 
 ## Preliminary visualizations  
 
