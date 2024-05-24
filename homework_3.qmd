@@ -4,21 +4,38 @@ author: "Kinga Bihari"
 format: html
 editor: visual
 date: 05/22/2024
+toc: true 
 execute:
   message: false
   warning: false
 ---
+make sure everything is commented!
 
 [Kinga's forked repo link](https://github.com/biharikinga/bihari-kinga_homework-03.git) 
 
 ### Read in packages/data
 ```{r}
-# read in packages
+# general use
 library(tidyverse)
+library(readxl)
+library(here)
 library(janitor)
-library(flextable)
 
-# read in personal data for #3
+# visualizing pairs
+library(GGally)
+
+# model selection
+library(MuMIn)
+
+# model predictions
+library(ggeffects)
+
+# model tables
+library(gtsummary)
+library(flextable)
+library(modelsummary)
+
+# read in personal data for #3 exploratory plot
 breakfast <- read_csv("stats brekkie data.csv") |> 
   clean_names() |>    # clean names
   slice(1:38)         # select dates I've collected data for
@@ -26,9 +43,11 @@ breakfast <- read_csv("stats brekkie data.csv") |>
 
 ### 1: Multiple linear regression: model selection and construction
 
-**1.a.**
+**1.a.** 
+Table 1. Model selection for multiple linear regression of total biomass as a function of SLA, water treatment, and/or species. Five models are considered, with Model 0 as the null model (no predictors), Model 1 as the saturated model (all predictors), and Models 2-4 with some combination of the 3 predictors. The rows represent the different models, and columns represent the different aspects of each model. Rows are sorted by "best" (lowest AIC value) model to "worst" (highest AIC value) model. 
 ```{r}
-
+models <- read_csv("models.csv")
+flextable(models)
 ```
 
 **1.b.**

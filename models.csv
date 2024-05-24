@@ -1,0 +1,6 @@
+Model number,Model description,Predictors,AIC,AIC delta
+4,water + species,"water, species",-156.2,0.0
+1,saturated model,"SLA, water, species",-153.8,2.44
+3,SLA + species ,"SLA, species",-124.1,32.12
+2,SLA + water,"SLA, water",-95.8,60.37
+0,null model,none,-75.0,81.22
