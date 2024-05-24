@@ -46,13 +46,19 @@ breakfast <- read_csv("stats brekkie data.csv") |>
 **1.a.** 
 Table 1. Model selection for multiple linear regression of total biomass as a function of SLA, water treatment, and/or species. Five models are considered, with Model 0 as the null model (no predictors), Model 1 as the saturated model (all predictors), and Models 2-4 with some combination of the 3 predictors. The rows represent the different models, and columns represent the different aspects of each model. Rows are sorted by "best" (lowest AIC value) model to "worst" (highest AIC value) model. 
 ```{r}
+# create table of models
 models <- read_csv("models.csv")
 flextable(models)
 ```
 
-**1.b.**
+**1.b.** To examine the influence of specific leaf area (SLA), water treatment (well watered or drought stressed), and species type on total biomass, I ran a multiple linear regression and chose the simplest linear model that predicted total biomass the best. Since there were 3 predictor variables, I ran 5 models (null, saturated, and 3 models with different combinations of the predictors). To determine the model that best predicted total biomass, I compared all 5 models and their Akaike Information Criterion (AIC) using model selection. Model 4, with water treatment and species predictors, had the lowest AIC and thus was the simplest model that fit the data best. To evaluate linear model assumptions, I ran diagnostics on all 5 models. I visually evaluated the linear relationship between the response and predictors, determined independent errors, ensured homoscedastic residuals, normally distributed residuals, and lack of residual outliers. 
+
+how you addressed the central question(s) (i.e. to examine the influence of ____, ____, and ____ on _____, I…)
+how you chose the final model (i.e. to determine the model that best described ____, I…)
+how you visually determined that your final model conformed to the assumptions of a linear model (i.e. to evaluate linear model assumptions, I…)
 
 **1.c.**
+
 
 **1.d.**
 
