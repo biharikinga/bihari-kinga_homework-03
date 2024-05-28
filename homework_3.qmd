@@ -55,7 +55,7 @@ flextable(models)
 
 **1.b.** To examine the influence of specific leaf area (SLA), water treatment (well watered or drought stressed), and species type on total biomass, I ran a multiple linear regression and chose the simplest linear model that predicted total biomass the best. Since there were 3 predictor variables, I ran 5 models (null, saturated, and 3 models with different combinations of the predictors). To determine the model that best predicted total biomass, I compared all 5 models and their Akaike Information Criterion (AIC) using model selection. Model 4, with water treatment and species predictors, had the lowest AIC and thus was the simplest model that fit the data best. To evaluate linear model assumptions, I ran diagnostics on all 5 models. I visually evaluated the linear relationship between the response and predictors, determined independent errors, ensured homoscedastic residuals, normally distributed residuals, and lack of residual outliers. 
 
-**1.c.**
+**1.c.** make sure to comment stuff
 ```{r}
 ggpredict(model4, 
           terms = c("species_name", "water_treatment")) |> 
@@ -73,10 +73,9 @@ ggplot(model_preds,
 ```
 
 
-**1.d.**
-Figure 1. 
+**1.d.** Figure 1. Water treatment and species predict total biomass. 
 
-**1.e.**
+**1.e.** 
 
 
 ### 2: Affective visualization
