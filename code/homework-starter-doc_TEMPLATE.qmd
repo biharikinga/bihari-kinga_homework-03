@@ -227,6 +227,8 @@ model4 <- lm(total_g ~ water_treatment + species_name,
 
 par(mfrow = c(2, 2))
 plot(model4)
+
+summary(model4)
 # you might get a warning when you run this code - that is ok!
 ```
 
@@ -235,15 +237,15 @@ plot(model4)
 From the `MuMIn` package
 
 ```{r}
-models <- model.sel(model0,
-                       model1,
-                       model2,
-                       model3,
-                       model4) 
-models2 <- models |> 
-  select(AICc)
+model.sel(model0,
+          model1,
+          model2,
+          model3,
+          model4)
 
-models_table <- flextable(models)
+models <- read_csv(here("models.csv"))
+
+flextable()
 ```
 
 Out of the four models we have tried, the best model is the one that includes **all 3 predictors**  
@@ -255,12 +257,12 @@ Note that this may change once you fit and compare the other model!
 # Model summary
 
 ```{r}
-summary(model1)
+summary(model4)
 ```
 
 What are the reference levels?  
 
-- reference for `water_treatment`  = "drought water_treatment Drought stressed"
+- reference for `water_treatment`  = "drought water_treatmentDrought stressed"
 - reference for `species_name`  = "Acmispon glaber (deerweed) species_nameAcmispon glaber"
 
 **reference for water_treatment:** **insert response here**  
@@ -280,13 +282,13 @@ estimate is super smaller, and SE overlaps 0, small t, large p
 **Note:** only plot terms in the model you select - if your doesn't include one of these terms, take it out and adjust the plotting code accordingly!
 
 ```{r}
-model_preds <- ggpredict(model1, 
-                         terms = c("sla",
-                                   "water_treatment", 
+model_preds <- ggpredict(model4, 
+                         terms = c("water_treatment", 
                                    "species_name"))
 
 # use View(model_preds) to see the predictions as a data frame
 # use model_preds to see the predictions formatted nicely
+View(model_preds)
 ```
 
 # Visualization

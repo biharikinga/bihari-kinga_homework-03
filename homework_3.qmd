@@ -1,7 +1,7 @@
 ---
 title: "Homework 3"
 author: "Kinga Bihari"
-format: html
+format: pdf
 editor: visual
 date: 05/28/2024
 toc: true 
@@ -10,7 +10,7 @@ execute:
   warning: false
 ---
 
-[Kinga's forked repo link](https://github.com/biharikinga/bihari-kinga_homework-03.git)
+Kinga's forked repo link: (https://github.com/biharikinga/bihari-kinga_homework-03.git)
 
 ### Read in packages/data & do relevant analysis for plotting
 
@@ -112,7 +112,12 @@ ggplot(model_preds,             # df
 # labels (x/y axes, caption)
   labs(x = "Species",
        y = "Total biomass weight (g)",
-       caption = "Figure 1. Species and water treatment predict total biomass weight in local plants. Colors represent \nwater treatment: blue points are well watered, orange are drought stressed. Translucent points represent \nall recorded weights of plants. Opaque points represent model predictions for that species, and error bars \nare the 95% confidence interval. Species names are shortened to just genus on x-axis for readability. \nDataset from Valliere et al. (2019) on Dryad.") +
+       caption = "Figure 1. Species and water treatment predict total biomass weight in 
+       local plants. Colors represent water treatment: blue points are well watered, 
+       orange are drought stressed. Translucent points represent all recorded weights 
+       of plants. Opaque points represent model predictions for that species, and error 
+       bars are the 95% confidence interval. Species names are shortened to just genus 
+       on x-axis for readability. Dataset from Valliere et al. (2019) on Dryad.") +
   
 # clean background
   theme_bw() +
@@ -139,7 +144,6 @@ ggplot(model_preds,             # df
 
 **1.e.** Comparing the models, I found that Model 4 (AIC = -156.2), which used species and water treatment as predictors, best predicted total plant biomass (multiple linear regression, F(7, 26) = 27.08, p \< 0.001, ⍺ = 0.05, R^2^ = 0.73). I found that on average, the well watered treatment predicted higher biomass across all species by about 0.2 g when compared to drought stressed treatment. I found that *Grindelia camporum* had the highest biomass, while *Acmispon glaber* had the lowest biomass, with a difference of about 0.3 g.
 
-Found a strong negative (Pearson’s r = -0.94) relationship between soil compaction and root length, where soil compaction significantly predicted root length (table reference or parenthetical, with R2). Based on model predictions, for each 1 MPa increase in soil compaction, root length decreases 0.94 ± 0.05 mm (figure reference here).
 
 ### 2: Affective visualization
 
