@@ -9,37 +9,61 @@ execute:
   message: false
   warning: false
 ---
-make sure everything is commented!
 
 [Kinga's forked repo link](https://github.com/biharikinga/bihari-kinga_homework-03.git) 
 
-### Read in packages/data
+### Read in packages/data & do relevant analysis for plotting
+**Note**: Data exploration, model diagnostics, model selection not included!
 ```{r}
 # general use
 library(tidyverse)
+library(janitor)
 library(readxl)
 library(here)
-library(janitor)
-
-# visualizing pairs
-library(GGally)
-
-# model selection
-library(MuMIn)
 
 # model predictions
 library(ggeffects)
 
 # model tables
-library(gtsummary)
 library(flextable)
 library(modelsummary)
 
-# read in personal data for #3 exploratory plot
-breakfast <- read_csv("stats brekkie data.csv") |> 
-  clean_names() |>    # clean names
-  slice(1:38)         # select dates I've collected data for
+# read in data 
+drought_exp <- read_xlsx(path = here("data", 
+                                     "Valliere_etal_EcoApps_Data.xlsx"),
+                         sheet = "First Harvest")
+
+# clean data
+drought_exp_clean <- drought_exp %>% 
+  clean_names() %>% # nicer column names
+  mutate(species_name = case_when( # adding column with species scientific names
+    species == "ENCCAL" ~ "Encelia californica", # bush sunflower
+    species == "ESCCAL" ~ "Eschscholzia californica", # California poppy
+    species == "PENCEN" ~ "Penstemon centranthifolius", # Scarlet bugler
+    species == "GRICAM" ~ "Grindelia camporum", # great valley gumweed
+    species == "SALLEU" ~ "Salvia leucophylla", # Purple sage
+    species == "STIPUL" ~ "Nasella pulchra", # Purple needlegrass
+    species == "LOTSCO" ~ "Acmispon glaber" # deerweed
+  )) %>% 
+  relocate(species_name, .after = species) %>% # moving species_name column after species
+  mutate(water_treatment = case_when( # adding column with full treatment names
+    water == "WW" ~ "Well watered",
+    water == "DS" ~ "Drought stressed"
+  )) %>% 
+  relocate(water_treatment, .after = water) # moving water_treatment column after water
+
+# model creation
+model4 <- lm(total_g ~ water_treatment + species_name,
+             data = drought_exp_clean)
+# look at model
+summary(model4)
+
+# create model predictions table
+model_preds <- ggpredict(model4, 
+                         terms = c("water_treatment", 
+                                   "species_name"))
 ```
+
 
 ### 1: Multiple linear regression: model selection and construction
 
@@ -55,30 +79,76 @@ flextable(models)
 
 **1.b.** To examine the influence of specific leaf area (SLA), water treatment (well watered or drought stressed), and species type on total biomass, I ran a multiple linear regression and chose the simplest linear model that predicted total biomass the best. Since there were 3 predictor variables, I ran 5 models (null, saturated, and 3 models with different combinations of the predictors). To determine the model that best predicted total biomass, I compared all 5 models and their Akaike Information Criterion (AIC) using model selection. Model 4, with water treatment and species predictors, had the lowest AIC and thus was the simplest model that fit the data best. To evaluate linear model assumptions, I ran diagnostics on all 5 models. I visually evaluated the linear relationship between the response and predictors, determined independent errors, ensured homoscedastic residuals, normally distributed residuals, and lack of residual outliers. 
 
-**1.c.** make sure to comment stuff
-```{r}
-ggpredict(model4, 
-          terms = c("species_name", "water_treatment")) |> 
-plot(show_data = TRUE)
+**1.c. & 1.d.** 
+```{r, fig.height = 6, fig.width = 8}
 
-
-ggplot(model_preds,
-       aes(x = group,
-           y = predicted)) +
-  geom_point() +
+# plot model predictions
+ggplot(model_preds,             # df
+       aes(x = reorder(group,   # reordering x-axis by mass
+                      -predicted),
+           y = predicted)) +    # x/y axes
+  
+# model predictions
+  geom_point(aes(color = x)) +  # color by water treatment
+  
+# facet by species 
   facet_wrap("group") +
-  geom_point(drought_exp_clean,
-             mapping = aes())
 
+# add underlying data 
+  geom_point(drought_exp_clean,             # df
+    mapping = aes(reorder(x = species_name,
+                          -total_g),
+                  y = total_g,              # x/y axes
+                  color = water_treatment), # color by water treatment
+      alpha = 0.2) +                        # translucent points
+  
+# plot 95% CI
+  geom_errorbar(aes(ymin = conf.low,
+                    ymax = conf.high,
+                    color = x)) +           # color by water treatment
+
+# labels (x/y axes, caption)
+  labs(x = "Species",
+       y = "Total biomass weight (g)",
+       caption = "Figure 1. Species and water treatment predict total biomass weight in local plants. Colors represent \nwater treatment: blue points are well watered, orange are drought stressed. Translucent points represent \nall recorded weights of plants. Opaque points represent model predictions for that species, and error bars \nare the 95% confidence interval. Species names are shortened to just genus on x-axis for readability. \nDataset from Valliere et al. (2019) on Dryad.") +
+  
+# clean background
+  theme_bw() +
+  
+# custom colors
+  scale_color_manual(values = c("skyblue2", "orange2")) +
+  
+# other formatting stuff
+  theme(legend.position = "none",           # no legend        
+    axis.text.x = element_text(angle = 60, 
+                               hjust = 1, 
+                               vjust = 1),  # angle x axis labels
+    plot.caption = element_text(hjust = 0), # caption left adjusted
+    plot.caption.position = "plot") +       # caption fill entire plot
+  scale_x_discrete(labels = c("Grindelia",
+                              "Eschscholzia",
+                              "Nasella",
+                              "Encelia",
+                              "Salvia",
+                              "Penstemon",
+                              "Acmispon"))     # shorter x axis labels
 ```
 
+**1.e.** Comparing the models, I found that Model 4 (AIC = -156.2), which used species and water treatment as predictors, best predicted total plant biomass (multiple linear regression, F(7, 26) = 27.08, p < 0.001, ⍺ = 0.05, R^2^ = 0.73). I found that on average, the well watered treatment predicted higher biomass across all species by about 0.2 g when compared to drought stressed treatment. I found that *Grindelia camporum* had the highest biomass, while *Acmispon glaber* had the lowest biomass, with a difference of about 0.3 g. 
 
-**1.d.** Figure 1. Water treatment and species predict total biomass. 
-
-**1.e.** 
+Found a strong negative (Pearson’s r = -0.94) relationship between soil compaction and root length, where soil compaction significantly predicted root length (table reference or parenthetical, with R2).
+Based on model predictions, for each 1 MPa increase in soil compaction, root length decreases 0.94 ± 0.05 mm (figure reference here).
 
 
 ### 2: Affective visualization
+
+Personal data exploration:
+```{r}
+# read in personal data for #3 exploratory plot
+breakfast <- read_csv("stats brekkie data.csv") |> 
+  clean_names() |>    # clean names
+  slice(1:38)         # select dates I have data for
+```
 
 **2.a.** My personal data is focused on when/what I eat for breakfast based on what I’m doing after. Since the “theme” is breakfast and activities, I could use these as my visualizations. I’m thinking of using emojis of breakfast foods or activities to be the points of a scatterplot. Or, I could scale the size of the emojis to represent how many times I’ve eaten that food or done that activity. 
 
@@ -93,7 +163,7 @@ ggplot(data = breakfast,
 ```
 
 **2.c.** [insert final graph!]
-Figure 1. When I have breakfast based on what activity I’m doing after. The icons represent the activity type and the mean time of day (gym = 8:17 am, pottery = 8:49 am, work = 10:25 am, homework = 9:02 am, recreation = 11:34 am) I eat breakfast before doing the corresponding activity. The icons’ size corresponds to how many times I have recorded doing that activity (gym = 7, pottery = 8, work = 8, homework = 11, recreation = 9). The background is an example of what I usually eat for breakfast. 
+Figure 2. When I have breakfast based on what activity I’m doing after. The icons represent the activity type and the mean time of day (gym = 8:17 am, pottery = 8:49 am, work = 10:25 am, homework = 9:02 am, recreation = 11:34 am) I eat breakfast before doing the corresponding activity. The icons’ size corresponds to how many times I have recorded doing that activity (gym = 7, pottery = 8, work = 8, homework = 11, recreation = 9). The background is an example of what I usually eat for breakfast. 
 
 **2.d.** This is an artistic rendition of how the activity I do after breakfast influences what time I eat breakfast, with icons representing the type of activity, and the size of the icon representing how many times I recorded that activity (recreation the most, gym the least). I was influenced by artists who use emojis, which simply and easily convey a lot more information than just words, to communicate information in infographics on various social media news forums (such as the accounts @feminist and @thenewsmovement). The form is "digital collage", since I used various images, icons, and text to create my graph. I used Adobe Photoshop to create this piece, as the creative freedom to move all elements wherever I wanted to was crucial in being able to bring together everything into a cohesive message. 
 

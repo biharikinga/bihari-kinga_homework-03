@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#read-in-packagesdata" id="toc-read-in-packagesdata" class="nav-link active" data-scroll-target="#read-in-packagesdata">Read in packages/data</a></li>
+  <li><a href="#read-in-packagesdata-do-relevant-analysis-for-plotting" id="toc-read-in-packagesdata-do-relevant-analysis-for-plotting" class="nav-link active" data-scroll-target="#read-in-packagesdata-do-relevant-analysis-for-plotting">Read in packages/data &amp; do relevant analysis for plotting</a></li>
   <li><a href="#multiple-linear-regression-model-selection-and-construction" id="toc-multiple-linear-regression-model-selection-and-construction" class="nav-link" data-scroll-target="#multiple-linear-regression-model-selection-and-construction">1: Multiple linear regression: model selection and construction</a></li>
   <li><a href="#affective-visualization" id="toc-affective-visualization" class="nav-link" data-scroll-target="#affective-visualization">2: Affective visualization</a></li>
   <li><a href="#statistical-critique" id="toc-statistical-critique" class="nav-link" data-scroll-target="#statistical-critique">3: Statistical critique</a></li>
@@ -123,73 +123,189 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>make sure everything is commented!</p>
 <p><a href="https://github.com/biharikinga/bihari-kinga_homework-03.git">Kinga’s forked repo link</a></p>
-<section id="read-in-packagesdata" class="level3">
-<h3 class="anchored" data-anchor-id="read-in-packagesdata">Read in packages/data</h3>
+<section id="read-in-packagesdata-do-relevant-analysis-for-plotting" class="level3">
+<h3 class="anchored" data-anchor-id="read-in-packagesdata-do-relevant-analysis-for-plotting">Read in packages/data &amp; do relevant analysis for plotting</h3>
+<p><strong>Note</strong>: Data exploration, model diagnostics, model selection not included!</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># general use</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># visualizing pairs</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># model predictions</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># model selection</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># model predictions</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># model tables</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flextable)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># read in personal data for #3 exploratory plot</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>breakfast <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"stats brekkie data.csv"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">|&gt;</span>    <span class="co"># clean names</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">38</span>)         <span class="co"># select dates I've collected data for</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># model tables</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flextable)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># read in data </span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>drought_exp <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="at">path =</span> <span class="fu">here</span>(<span class="st">"data"</span>, </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">"Valliere_etal_EcoApps_Data.xlsx"</span>),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                         <span class="at">sheet =</span> <span class="st">"First Harvest"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># clean data</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>drought_exp_clean <span class="ot">&lt;-</span> drought_exp <span class="sc">%&gt;%</span> </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span> <span class="co"># nicer column names</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">species_name =</span> <span class="fu">case_when</span>( <span class="co"># adding column with species scientific names</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    species <span class="sc">==</span> <span class="st">"ENCCAL"</span> <span class="sc">~</span> <span class="st">"Encelia californica"</span>, <span class="co"># bush sunflower</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    species <span class="sc">==</span> <span class="st">"ESCCAL"</span> <span class="sc">~</span> <span class="st">"Eschscholzia californica"</span>, <span class="co"># California poppy</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    species <span class="sc">==</span> <span class="st">"PENCEN"</span> <span class="sc">~</span> <span class="st">"Penstemon centranthifolius"</span>, <span class="co"># Scarlet bugler</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    species <span class="sc">==</span> <span class="st">"GRICAM"</span> <span class="sc">~</span> <span class="st">"Grindelia camporum"</span>, <span class="co"># great valley gumweed</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    species <span class="sc">==</span> <span class="st">"SALLEU"</span> <span class="sc">~</span> <span class="st">"Salvia leucophylla"</span>, <span class="co"># Purple sage</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    species <span class="sc">==</span> <span class="st">"STIPUL"</span> <span class="sc">~</span> <span class="st">"Nasella pulchra"</span>, <span class="co"># Purple needlegrass</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    species <span class="sc">==</span> <span class="st">"LOTSCO"</span> <span class="sc">~</span> <span class="st">"Acmispon glaber"</span> <span class="co"># deerweed</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(species_name, <span class="at">.after =</span> species) <span class="sc">%&gt;%</span> <span class="co"># moving species_name column after species</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">water_treatment =</span> <span class="fu">case_when</span>( <span class="co"># adding column with full treatment names</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    water <span class="sc">==</span> <span class="st">"WW"</span> <span class="sc">~</span> <span class="st">"Well watered"</span>,</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    water <span class="sc">==</span> <span class="st">"DS"</span> <span class="sc">~</span> <span class="st">"Drought stressed"</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(water_treatment, <span class="at">.after =</span> water) <span class="co"># moving water_treatment column after water</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># model creation</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>model4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_g <span class="sc">~</span> water_treatment <span class="sc">+</span> species_name,</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> drought_exp_clean)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># look at model</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = total_g ~ water_treatment + species_name, data = drought_exp_clean)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.157087 -0.046953 -0.003733  0.041244  0.192657 
+
+Coefficients:
+                                       Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                             0.05455    0.02451   2.225  0.02973 *  
+water_treatmentWell watered             0.11695    0.01733   6.746 5.90e-09 ***
+species_nameEncelia californica         0.21774    0.03243   6.714 6.70e-09 ***
+species_nameEschscholzia californica    0.23164    0.03243   7.143 1.22e-09 ***
+species_nameGrindelia camporum          0.31335    0.03243   9.662 5.53e-14 ***
+species_nameNasella pulchra             0.22881    0.03243   7.055 1.72e-09 ***
+species_namePenstemon centranthifolius  0.05003    0.03243   1.543  0.12799    
+species_nameSalvia leucophylla          0.12020    0.03243   3.706  0.00045 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.07252 on 62 degrees of freedom
+Multiple R-squared:  0.7535,    Adjusted R-squared:  0.7257 
+F-statistic: 27.08 on 7 and 62 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create model predictions table</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>model_preds <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(model4, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"water_treatment"</span>, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">"species_name"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="multiple-linear-regression-model-selection-and-construction" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-linear-regression-model-selection-and-construction">1: Multiple linear regression: model selection and construction</h3>
 <p><strong>1.a.</strong> Table 1. Model selection for multiple linear regression of total biomass as a function of SLA, water treatment, and/or species. Five models are considered, with Model 0 as the null model (no predictors), Model 1 as the saturated model (all predictors), and Models 2-4 with some combination of the 3 predictors. The rows represent the different models, and columns represent the different aspects of each model. Rows are sorted by “best” (lowest AIC value) model to “worst” (highest AIC value) model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create table of models</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"models.csv"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">flextable</span>(models)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read in table of models</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"models.csv"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># use flextable to make nice table</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">flextable</span>(models)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-8f09c2d6{}.cl-8f06a6e6{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8f07f622{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8f07f623{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8f07ff8c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8f07ff8d{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8f07ff8e{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8f07ff96{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8f07ff97{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8f07ff98{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-8f09c2d6"><thead><tr style="overflow-wrap:break-word;"><th class="cl-8f07ff8c"><p class="cl-8f07f622"><span class="cl-8f06a6e6">Model number</span></p></th><th class="cl-8f07ff8d"><p class="cl-8f07f623"><span class="cl-8f06a6e6">Model description</span></p></th><th class="cl-8f07ff8d"><p class="cl-8f07f623"><span class="cl-8f06a6e6">Predictors</span></p></th><th class="cl-8f07ff8c"><p class="cl-8f07f622"><span class="cl-8f06a6e6">AIC</span></p></th><th class="cl-8f07ff8c"><p class="cl-8f07f622"><span class="cl-8f06a6e6">AIC delta</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">4</span></p></td><td class="cl-8f07ff96"><p class="cl-8f07f623"><span class="cl-8f06a6e6">water + species</span></p></td><td class="cl-8f07ff96"><p class="cl-8f07f623"><span class="cl-8f06a6e6">water, species</span></p></td><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">-156.2</span></p></td><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">0.00</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">1</span></p></td><td class="cl-8f07ff96"><p class="cl-8f07f623"><span class="cl-8f06a6e6">saturated model</span></p></td><td class="cl-8f07ff96"><p class="cl-8f07f623"><span class="cl-8f06a6e6">SLA, water, species</span></p></td><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">-153.8</span></p></td><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">2.44</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">3</span></p></td><td class="cl-8f07ff96"><p class="cl-8f07f623"><span class="cl-8f06a6e6">SLA + species</span></p></td><td class="cl-8f07ff96"><p class="cl-8f07f623"><span class="cl-8f06a6e6">SLA, species</span></p></td><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">-124.1</span></p></td><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">32.12</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">2</span></p></td><td class="cl-8f07ff96"><p class="cl-8f07f623"><span class="cl-8f06a6e6">SLA + water</span></p></td><td class="cl-8f07ff96"><p class="cl-8f07f623"><span class="cl-8f06a6e6">SLA, water</span></p></td><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">-95.8</span></p></td><td class="cl-8f07ff8e"><p class="cl-8f07f622"><span class="cl-8f06a6e6">60.37</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8f07ff97"><p class="cl-8f07f622"><span class="cl-8f06a6e6">0</span></p></td><td class="cl-8f07ff98"><p class="cl-8f07f623"><span class="cl-8f06a6e6">null model</span></p></td><td class="cl-8f07ff98"><p class="cl-8f07f623"><span class="cl-8f06a6e6">none</span></p></td><td class="cl-8f07ff97"><p class="cl-8f07f622"><span class="cl-8f06a6e6">-75.0</span></p></td><td class="cl-8f07ff97"><p class="cl-8f07f622"><span class="cl-8f06a6e6">81.22</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-73fa65ac{}.cl-73f79f8e{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-73f8bbda{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-73f8bbe4{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-73f8c440{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-73f8c441{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-73f8c442{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-73f8c443{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-73f8c444{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-73f8c44a{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-73fa65ac"><thead><tr style="overflow-wrap:break-word;"><th class="cl-73f8c440"><p class="cl-73f8bbda"><span class="cl-73f79f8e">Model number</span></p></th><th class="cl-73f8c441"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">Model description</span></p></th><th class="cl-73f8c441"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">Predictors</span></p></th><th class="cl-73f8c440"><p class="cl-73f8bbda"><span class="cl-73f79f8e">AIC</span></p></th><th class="cl-73f8c440"><p class="cl-73f8bbda"><span class="cl-73f79f8e">AIC delta</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">4</span></p></td><td class="cl-73f8c443"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">water + species</span></p></td><td class="cl-73f8c443"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">water, species</span></p></td><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">-156.2</span></p></td><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">0.00</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">1</span></p></td><td class="cl-73f8c443"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">saturated model</span></p></td><td class="cl-73f8c443"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">SLA, water, species</span></p></td><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">-153.8</span></p></td><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">2.44</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">3</span></p></td><td class="cl-73f8c443"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">SLA + species</span></p></td><td class="cl-73f8c443"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">SLA, species</span></p></td><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">-124.1</span></p></td><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">32.12</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">2</span></p></td><td class="cl-73f8c443"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">SLA + water</span></p></td><td class="cl-73f8c443"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">SLA, water</span></p></td><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">-95.8</span></p></td><td class="cl-73f8c442"><p class="cl-73f8bbda"><span class="cl-73f79f8e">60.37</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-73f8c444"><p class="cl-73f8bbda"><span class="cl-73f79f8e">0</span></p></td><td class="cl-73f8c44a"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">null model</span></p></td><td class="cl-73f8c44a"><p class="cl-73f8bbe4"><span class="cl-73f79f8e">none</span></p></td><td class="cl-73f8c444"><p class="cl-73f8bbda"><span class="cl-73f79f8e">-75.0</span></p></td><td class="cl-73f8c444"><p class="cl-73f8bbda"><span class="cl-73f79f8e">81.22</span></p></td></tr></tbody></table></div>
 </div>
 </div>
-<p><strong>1.b.</strong></p>
-<p><strong>1.c.</strong></p>
-<p><strong>1.d.</strong></p>
-<p><strong>1.e.</strong></p>
-</section>
-<section id="affective-visualization" class="level3">
-<h3 class="anchored" data-anchor-id="affective-visualization">2: Affective visualization</h3>
-<p><strong>2.a.</strong> My personal data is focused on when/what I eat for breakfast based on what I’m doing after. Since the “theme” is breakfast and activities, I could use these as my visualizations. I’m thinking of using emojis of breakfast foods or activities to be the points of a scatterplot. Or, I could scale the size of the emojis to represent how many times I’ve eaten that food or done that activity.</p>
-<p><strong>2.b.</strong> [insert sketch!]</p>
+<p><strong>1.b.</strong> To examine the influence of specific leaf area (SLA), water treatment (well watered or drought stressed), and species type on total biomass, I ran a multiple linear regression and chose the simplest linear model that predicted total biomass the best. Since there were 3 predictor variables, I ran 5 models (null, saturated, and 3 models with different combinations of the predictors). To determine the model that best predicted total biomass, I compared all 5 models and their Akaike Information Criterion (AIC) using model selection. Model 4, with water treatment and species predictors, had the lowest AIC and thus was the simplest model that fit the data best. To evaluate linear model assumptions, I ran diagnostics on all 5 models. I visually evaluated the linear relationship between the response and predictors, determined independent errors, ensured homoscedastic residuals, normally distributed residuals, and lack of residual outliers.</p>
+<p><strong>1.c. &amp; 1.d.</strong> make sure to comment stuff</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exploratory plot</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> breakfast,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> activity_category,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> time)) <span class="sc">+</span>  <span class="co"># dataframe &amp; axes</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># scatter plot!</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot model predictions</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(model_preds,             <span class="co"># df</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(group,   <span class="co"># reordering x-axis by mass</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                      <span class="sc">-</span>predicted),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> predicted)) <span class="sc">+</span>    <span class="co"># x/y axes</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># model predictions</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> x)) <span class="sc">+</span>  <span class="co"># color by water treatment</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># facet by species </span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="st">"group"</span>) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># add underlying data </span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(drought_exp_clean,             <span class="co"># df</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="fu">reorder</span>(<span class="at">x =</span> species_name,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                          <span class="sc">-</span>total_g),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">y =</span> total_g,              <span class="co"># x/y axes</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>                  <span class="at">color =</span> water_treatment), <span class="co"># color by water treatment</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span>                        <span class="co"># translucent points</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co"># plot 95% CI</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low,</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ymax =</span> conf.high,</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>                    <span class="at">color =</span> x)) <span class="sc">+</span>           <span class="co"># color by water treatment</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co"># labels (x/y axes, caption)</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Species"</span>,</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total biomass weight (g)"</span>,</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Figure 1. Species and water treatment predict total biomass weight in local plants. Colors represent </span><span class="sc">\n</span><span class="st">water treatment: blue points are well watered, orange are drought stressed. Translucent points represent </span><span class="sc">\n</span><span class="st">all recorded weights of plants. Opaque points represent model predictions for that species, and error bars </span><span class="sc">\n</span><span class="st">are the 95% confidence interval. Species names are shortened to just genus on x-axis for readability. </span><span class="sc">\n</span><span class="st">Dataset from Valliere et al. (2019) on Dryad."</span>) <span class="sc">+</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co"># clean background</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co"># custom colors</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"skyblue2"</span>, <span class="st">"orange2"</span>)) <span class="sc">+</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co"># other formatting stuff</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,           <span class="co"># no legend        </span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">60</span>, </span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>                               <span class="at">hjust =</span> <span class="dv">1</span>, </span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>                               <span class="at">vjust =</span> <span class="dv">1</span>),  <span class="co"># angle x axis labels</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>), <span class="co"># caption left adjusted</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>) <span class="sc">+</span>       <span class="co"># caption fill entire plot</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Grindelia"</span>,</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"Eschscholzia"</span>,</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"Nasella"</span>,</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"Encelia"</span>,</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"Salvia"</span>,</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"Penstemon"</span>,</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"Acmispon"</span>))     <span class="co"># shorter x axis labels</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="homework_3_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="homework_3_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="576"></p>
 </figure>
 </div>
 </div>
 </div>
-<p><strong>2.c.</strong> [insert final graph!] Figure 1. When I have breakfast based on what activity I’m doing after. The icons represent the activity type and the mean time of day (gym = 8:17 am, pottery = 8:49 am, work = 10:25 am, homework = 9:02 am, recreation = 11:34 am) I eat breakfast before doing the corresponding activity. The icons’ size corresponds to how many times I have recorded doing that activity (gym = 7, pottery = 8, work = 8, homework = 11, recreation = 9). The background is an example of what I usually eat for breakfast.</p>
+<p><strong>1.e.</strong> Comparing the models, I found that Model 4 (AIC = -156.2), which used species and water treatment as predictors, best predicted total plant biomass (multiple linear regression, F(7, 26) = 27.08, p &lt; 0.001, ⍺ = 0.05, R<sup>2</sup> = 0.73). I found that on average, the well watered treatment predicted higher biomass across all species by about 0.2 g when compared to drought stressed treatment. I found that <em>Grindelia camporum</em> had the highest biomass, while <em>Acmispon glaber</em> had the lowest biomass, with a difference of about 0.3 g.</p>
+<p>Found a strong negative (Pearson’s r = -0.94) relationship between soil compaction and root length, where soil compaction significantly predicted root length (table reference or parenthetical, with R2). Based on model predictions, for each 1 MPa increase in soil compaction, root length decreases 0.94 ± 0.05 mm (figure reference here).</p>
+</section>
+<section id="affective-visualization" class="level3">
+<h3 class="anchored" data-anchor-id="affective-visualization">2: Affective visualization</h3>
+<p><strong>Personal data exploration!</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read in personal data for #3 exploratory plot</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>breakfast <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"stats brekkie data.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">|&gt;</span>    <span class="co"># clean names</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">38</span>)         <span class="co"># select dates I have data for</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>2.a.</strong> My personal data is focused on when/what I eat for breakfast based on what I’m doing after. Since the “theme” is breakfast and activities, I could use these as my visualizations. I’m thinking of using emojis of breakfast foods or activities to be the points of a scatterplot. Or, I could scale the size of the emojis to represent how many times I’ve eaten that food or done that activity.</p>
+<p><strong>2.b.</strong> [insert sketch!]</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exploratory plot</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> breakfast,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> activity_category,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> time)) <span class="sc">+</span>  <span class="co"># dataframe &amp; axes</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># scatter plot!</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework_3_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>2.c.</strong> [insert final graph!] Figure 2. When I have breakfast based on what activity I’m doing after. The icons represent the activity type and the mean time of day (gym = 8:17 am, pottery = 8:49 am, work = 10:25 am, homework = 9:02 am, recreation = 11:34 am) I eat breakfast before doing the corresponding activity. The icons’ size corresponds to how many times I have recorded doing that activity (gym = 7, pottery = 8, work = 8, homework = 11, recreation = 9). The background is an example of what I usually eat for breakfast.</p>
 <p><strong>2.d.</strong> This is an artistic rendition of how the activity I do after breakfast influences what time I eat breakfast, with icons representing the type of activity, and the size of the icon representing how many times I recorded that activity (recreation the most, gym the least). I was influenced by artists who use emojis, which simply and easily convey a lot more information than just words, to communicate information in infographics on various social media news forums (such as the accounts <span class="citation" data-cites="feminist">@feminist</span> and <span class="citation" data-cites="thenewsmovement">@thenewsmovement</span>). The form is “digital collage”, since I used various images, icons, and text to create my graph. I used Adobe Photoshop to create this piece, as the creative freedom to move all elements wherever I wanted to was crucial in being able to bring together everything into a cohesive message.</p>
 </section>
 <section id="statistical-critique" class="level3">
