@@ -10,10 +10,12 @@ execute:
   warning: false
 ---
 
-[Kinga's forked repo link](https://github.com/biharikinga/bihari-kinga_homework-03.git) 
+[Kinga's forked repo link](https://github.com/biharikinga/bihari-kinga_homework-03.git)
 
 ### Read in packages/data & do relevant analysis for plotting
+
 **Note**: Data exploration, model diagnostics, model selection not included!
+
 ```{r}
 # general use
 library(tidyverse)
@@ -64,11 +66,10 @@ model_preds <- ggpredict(model4,
                                    "species_name"))
 ```
 
-
 ### 1: Multiple linear regression: model selection and construction
 
-**1.a.** 
-Table 1. Model selection for multiple linear regression of total biomass as a function of SLA, water treatment, and/or species. Five models are considered, with Model 0 as the null model (no predictors), Model 1 as the saturated model (all predictors), and Models 2-4 with some combination of the 3 predictors. The rows represent the different models, and columns represent the different aspects of each model. Rows are sorted by "best" (lowest AIC value) model to "worst" (highest AIC value) model. 
+**1.a.** Table 1. Model selection for multiple linear regression of total biomass as a function of SLA, water treatment, and/or species. Five models are considered, with Model 0 as the null model (no predictors), Model 1 as the saturated model (all predictors), and Models 2-4 with some combination of the 3 predictors. The rows represent the different models, and columns represent the different aspects of each model. Rows are sorted by "best" (lowest AIC value) model to "worst" (highest AIC value) model.
+
 ```{r}
 # read in table of models
 models <- read_csv("models.csv")
@@ -77,9 +78,10 @@ models <- read_csv("models.csv")
 flextable(models)
 ```
 
-**1.b.** To examine the influence of specific leaf area (SLA), water treatment (well watered or drought stressed), and species type on total biomass, I ran a multiple linear regression and chose the simplest linear model that predicted total biomass the best. Since there were 3 predictor variables, I ran 5 models (null, saturated, and 3 models with different combinations of the predictors). To determine the model that best predicted total biomass, I compared all 5 models and their Akaike Information Criterion (AIC) using model selection. Model 4, with water treatment and species predictors, had the lowest AIC and thus was the simplest model that fit the data best. To evaluate linear model assumptions, I ran diagnostics on all 5 models. I visually evaluated the linear relationship between the response and predictors, determined independent errors, ensured homoscedastic residuals, normally distributed residuals, and lack of residual outliers. 
+**1.b.** To examine the influence of specific leaf area (SLA), water treatment (well watered or drought stressed), and species type on total biomass, I ran a multiple linear regression and chose the simplest linear model that predicted total biomass the best. Since there were 3 predictor variables, I ran 5 models (null, saturated, and 3 models with different combinations of the predictors). To determine the model that best predicted total biomass, I compared all 5 models and their Akaike Information Criterion (AIC) using model selection. Model 4, with water treatment and species predictors, had the lowest AIC and thus was the simplest model that fit the data best. To evaluate linear model assumptions, I ran diagnostics on all 5 models. I visually evaluated the linear relationship between the response and predictors, determined independent errors, ensured homoscedastic residuals, normally distributed residuals, and lack of residual outliers.
 
-**1.c. & 1.d.** 
+**1.c. & 1.d.**
+
 ```{r, fig.height = 6.5, fig.width = 8}
 
 # plot model predictions
@@ -135,15 +137,14 @@ ggplot(model_preds,             # df
                               "Acmispon"))    # shorter x axis labels
 ```
 
-**1.e.** Comparing the models, I found that Model 4 (AIC = -156.2), which used species and water treatment as predictors, best predicted total plant biomass (multiple linear regression, F(7, 26) = 27.08, p < 0.001, ⍺ = 0.05, R^2^ = 0.73). I found that on average, the well watered treatment predicted higher biomass across all species by about 0.2 g when compared to drought stressed treatment. I found that *Grindelia camporum* had the highest biomass, while *Acmispon glaber* had the lowest biomass, with a difference of about 0.3 g. 
+**1.e.** Comparing the models, I found that Model 4 (AIC = -156.2), which used species and water treatment as predictors, best predicted total plant biomass (multiple linear regression, F(7, 26) = 27.08, p \< 0.001, ⍺ = 0.05, R^2^ = 0.73). I found that on average, the well watered treatment predicted higher biomass across all species by about 0.2 g when compared to drought stressed treatment. I found that *Grindelia camporum* had the highest biomass, while *Acmispon glaber* had the lowest biomass, with a difference of about 0.3 g.
 
-Found a strong negative (Pearson’s r = -0.94) relationship between soil compaction and root length, where soil compaction significantly predicted root length (table reference or parenthetical, with R2).
-Based on model predictions, for each 1 MPa increase in soil compaction, root length decreases 0.94 ± 0.05 mm (figure reference here).
-
+Found a strong negative (Pearson’s r = -0.94) relationship between soil compaction and root length, where soil compaction significantly predicted root length (table reference or parenthetical, with R2). Based on model predictions, for each 1 MPa increase in soil compaction, root length decreases 0.94 ± 0.05 mm (figure reference here).
 
 ### 2: Affective visualization
 
 Personal data exploration:
+
 ```{r}
 # read in personal data for #3 exploratory plot
 breakfast <- read_csv("stats brekkie data.csv") |> 
@@ -151,9 +152,12 @@ breakfast <- read_csv("stats brekkie data.csv") |>
   slice(1:38)         # select dates I have data for
 ```
 
-**2.a.** My personal data is focused on when/what I eat for breakfast based on what I’m doing after. Since the “theme” is breakfast and activities, I could use these as my visualizations. I’m thinking of using emojis of breakfast foods or activities to be the points of a scatterplot. Or, I could scale the size of the emojis to represent how many times I’ve eaten that food or done that activity. 
+**2.a.** My personal data is focused on when/what I eat for breakfast based on what I’m doing after. Since the “theme” is breakfast and activities, I could use these as my visualizations. I’m thinking of using emojis of breakfast foods or activities to be the points of a scatterplot. Or, I could scale the size of the emojis to represent how many times I’ve eaten that food or done that activity.
 
-**2.b.** [insert sketch!]
+**2.b.**
+
+![](2.b.png)
+
 ```{r}
 # exploratory plot
 ggplot(data = breakfast,
@@ -163,24 +167,28 @@ ggplot(data = breakfast,
   geom_point()
 ```
 
-**2.c.** [insert final graph!]
-Figure 2. When I have breakfast based on what activity I’m doing after. The icons represent the activity type and the mean time of day (gym = 8:17 am, pottery = 8:49 am, work = 10:25 am, homework = 9:02 am, recreation = 11:34 am) I eat breakfast before doing the corresponding activity. The icons’ size corresponds to how many times I have recorded doing that activity (gym = 7, pottery = 8, work = 8, homework = 11, recreation = 9). The background is an example of what I usually eat for breakfast. 
+**2.c.**
 
-**2.d.** This is an artistic rendition of how the activity I do after breakfast influences what time I eat breakfast, with icons representing the type of activity, and the size of the icon representing how many times I recorded that activity (recreation the most, gym the least). I was influenced by artists who use emojis, which simply and easily convey a lot more information than just words, to communicate information in infographics on various social media news forums (such as the accounts @feminist and @thenewsmovement). The form is "digital collage", since I used various images, icons, and text to create my graph. I used Adobe Photoshop to create this piece, as the creative freedom to move all elements wherever I wanted to was crucial in being able to bring together everything into a cohesive message. 
+![](2.c.png)
+
+Figure 2. When I have breakfast based on what activity I’m doing after. The icons represent the activity type and the mean time of day (gym = 8:17 am, pottery = 8:49 am, work = 10:25 am, homework = 9:02 am, recreation = 11:34 am) I eat breakfast before doing the corresponding activity. The icons’ size corresponds to how many times I have recorded doing that activity (gym = 7, pottery = 8, work = 8, homework = 11, recreation = 9). The background is an example of what I usually eat for breakfast.
+
+**2.d.** This is an artistic rendition of how the activity I do after breakfast influences what time I eat breakfast, with icons representing the type of activity, and the size of the icon representing how many times I recorded that activity (recreation the most, gym the least). I was influenced by artists who use emojis, which simply and easily convey a lot more information than just words, to communicate information in infographics on various social media news forums (such as the accounts @feminist and @thenewsmovement). The form is "digital collage", since I used various images, icons, and text to create my graph. I used Adobe Photoshop to create this piece, as the creative freedom to move all elements wherever I wanted to was crucial in being able to bring together everything into a cohesive message.
 
 ### 3: Statistical critique
 
 **3.a.** Their main objective is: to quantify C and N storage of a restored wetland at the Emiquon Preserve (a restored wetland) and examine it for additional C sequestration by comparing its C storage with C storage of reference natural wetlands. They used a one-way ANOVA to determine how restored wetland soil depth influenced OC storage and TN storage of root biomass and soils. They also did a nested three-way ANOVA test to determine how the reference wetland type, soil depth, and site (nested within wetland type) influenced OC storage and TN storage of above and below ground plant biomass and soil.
 
-[Insert fig 2 & 3!]
+![](fig2.png)
 
-Fig. 2: Main message is that sedge meadows (restored wetlands) have significantly higher aboveground N and C storage than the reference marshes (natural wetlands). x-axis is aboveground C or N storage, y-axis is the wetland type (sedge or marsh). 
-Fig. 3: Main message is that sedge meadows (restored wetlands) have significantly higher root N and C storage than the reference marshes (natural wetlands). Both have lower root N and C storage in the upper 20 cm of soil than 20-40 cm deep. x-axis is root C or N storage, y-axis is the wetland type (sedge or marsh). 
+Fig. 2: Main message is that sedge meadows (restored wetlands) have significantly higher aboveground N and C storage than the reference marshes (natural wetlands). x-axis is aboveground C or N storage, y-axis is the wetland type (sedge or marsh).
 
-**3.b.** They represented their statistics pretty clearly in the figures. However, they didn’t use color to differentiate between the sedge and marsh, and the use of white as a color in Fig. 3 is confusing because at first glance it just looks like a gap. The x and y axes are logical and easy to read, with correct units. They show standard deviation on top of all of the data, but no other summary statistics. The SD bars do help to show the large variance in data, but SE + mean could’ve been a better way to visualize that. They don’t have any applicable model predictions. 
+![](fig3.png)
+
+Fig. 3: Main message is that sedge meadows (restored wetlands) have significantly higher root N and C storage than the reference marshes (natural wetlands). Both have lower root N and C storage in the upper 20 cm of soil than 20-40 cm deep. x-axis is root C or N storage, y-axis is the wetland type (sedge or marsh).
+
+**3.b.** They represented their statistics pretty clearly in the figures. However, they didn’t use color to differentiate between the sedge and marsh, and the use of white as a color in Fig. 3 is confusing because at first glance it just looks like a gap. The x and y axes are logical and easy to read, with correct units. They show standard deviation on top of all of the data, but no other summary statistics. The SD bars do help to show the large variance in data, but SE + mean could’ve been a better way to visualize that. They don’t have any applicable model predictions.
 
 **3.c.** I think they handled visual clutter very well. The data:ink ratio is very high - all of the ink is being used to describe the data in a meaningful way. There are no gridlines, the plots aren’t cluttered with irrelevant data, the labels are also informative but not too detailed, and have units where appropriate. The a) and b) plots are also labeled clearly and explained in the caption instead of cluttering the plot with unnecessary titles/descriptions. The legend in figure 5 is simple but necessary as well.
 
 **3.d.** My first recommendation is to use color instead of gray gradient (color blind friendly colors), especially replacing the white with a color so it’s clear that’s also data, not just blank space. I would also color code sedge and marsh in fig. 3 to make it more visually pleasing, and do different shades of those colors for the 3 depths in fig. 5. I would increase the axes text size a bit to make it easier to read. I would maybe replace standard deviation with mean/SE and/or add the underlying data as well. I would keep everything else the same because overall it’s a pretty good graph.
-
-
