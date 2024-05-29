@@ -3,7 +3,7 @@ title: "Homework 3"
 author: "Kinga Bihari"
 format: html
 editor: visual
-date: 05/22/2024
+date: 05/28/2024
 toc: true 
 execute:
   message: false
@@ -80,7 +80,7 @@ flextable(models)
 **1.b.** To examine the influence of specific leaf area (SLA), water treatment (well watered or drought stressed), and species type on total biomass, I ran a multiple linear regression and chose the simplest linear model that predicted total biomass the best. Since there were 3 predictor variables, I ran 5 models (null, saturated, and 3 models with different combinations of the predictors). To determine the model that best predicted total biomass, I compared all 5 models and their Akaike Information Criterion (AIC) using model selection. Model 4, with water treatment and species predictors, had the lowest AIC and thus was the simplest model that fit the data best. To evaluate linear model assumptions, I ran diagnostics on all 5 models. I visually evaluated the linear relationship between the response and predictors, determined independent errors, ensured homoscedastic residuals, normally distributed residuals, and lack of residual outliers. 
 
 **1.c. & 1.d.** 
-```{r, fig.height = 6, fig.width = 8}
+```{r, fig.height = 6.5, fig.width = 8}
 
 # plot model predictions
 ggplot(model_preds,             # df
@@ -123,7 +123,8 @@ ggplot(model_preds,             # df
     axis.text.x = element_text(angle = 60, 
                                hjust = 1, 
                                vjust = 1),  # angle x axis labels
-    plot.caption = element_text(hjust = 0), # caption left adjusted
+    plot.caption = element_text(hjust = 0,  # caption left adjusted
+                                size = 12), # font size
     plot.caption.position = "plot") +       # caption fill entire plot
   scale_x_discrete(labels = c("Grindelia",
                               "Eschscholzia",
@@ -131,7 +132,7 @@ ggplot(model_preds,             # df
                               "Encelia",
                               "Salvia",
                               "Penstemon",
-                              "Acmispon"))     # shorter x axis labels
+                              "Acmispon"))    # shorter x axis labels
 ```
 
 **1.e.** Comparing the models, I found that Model 4 (AIC = -156.2), which used species and water treatment as predictors, best predicted total plant biomass (multiple linear regression, F(7, 26) = 27.08, p < 0.001, ⍺ = 0.05, R^2^ = 0.73). I found that on average, the well watered treatment predicted higher biomass across all species by about 0.2 g when compared to drought stressed treatment. I found that *Grindelia camporum* had the highest biomass, while *Acmispon glaber* had the lowest biomass, with a difference of about 0.3 g. 
